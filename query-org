@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -euo pipefail
+
+query="$1"
+
+resp="$(aws configservice describe-configuration-aggregators)"
+
+cat <<< "$resp" \
+| jq '
+    .ConfigurationAggregators
+    | length
+    | select(. != 1)
+    | "Expected 1 aggregator, found \(.)\n"
+    | halt_error(1)
+'
+
+aggregator="$(jq -j '.ConfigurationAggregators[0].ConfigurationAggregatorName' <<< "$resp")"
+
+aws configservice select-aggregate-resource-config \
+--configuration-aggregator-name "$aggregator" \
+--expression "$query" \
+| jq '
+    def select_paths($paths):
+      [$paths[] as $path | {key: $path, value: getpath($path | split("."))}] | from_entries
+    ;
+    
+    def parse($paths):
+      fromjson | if $paths | contains(["*"]) then . else select_paths($paths) end
+    ;
+    
+    [.QueryInfo.SelectFields[].Name] as $paths
+    | [.Results[] | parse($paths)]
+'
