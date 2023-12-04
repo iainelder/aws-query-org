@@ -41,7 +41,7 @@ A tip: Don't end the query string with a newline or you'll get a confusing error
 
 It will take a while to retrieve a result with many thousands of items because the API responds with 100 items per page.
 
-Use these commands to install in a temporary place and run a simple query to check the conifiguration.
+Use these commands to install in a temporary place and run a simple query to check the configuration.
 
 ```bash
 tmp=$(mktemp --dir)
