@@ -40,3 +40,12 @@ To get output like this:
 A tip: Don't end the query string with a newline or you'll get a confusing error: `An error occurred (InvalidExpressionException) when calling the SelectAggregateResourceConfig operation: syntax error at line 7, column 1`.
 
 It will take a while to retrieve a result with many thousands of items because the API responds with 100 items per page.
+
+Use these commands to install in a temporary place and run a simple query to check the conifiguration.
+
+```bash
+tmp=$(mktemp --dir)
+curl https://github.com/iainelder/aws-query-org/blob/main/query-org > "$tmp"/query-org
+PATH="${PATH}:$tmp"
+query-org "SELECT COUNT(*);"
+```
