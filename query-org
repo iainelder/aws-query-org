@@ -26,7 +26,7 @@ aws configservice select-aggregate-resource-config \
     ;
     
     def parse($paths):
-      fromjson | if if any($paths[]; . == "*") then . else select_paths($paths) end
+      fromjson | if any($paths[]; . == "*") then . else select_paths($paths) end
     ;
     
     [.QueryInfo.SelectFields[].Name] as $paths
